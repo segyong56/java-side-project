@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
-const DetailViewScreen = ({ route }) => {
+const DetailViewScreen = ({ route, navigation }) => {
 
     const { itemId } = route.params;
 
-    const [memo, setMemo] = useState({})
+    const [memo, setMemo] = useState({
+        title: '',
+        content: ''
+    })
     useEffect(() => {
 
         const fetchMemo = async () => {
 
-            const { data } = await axios.get(`http://10.40.1.202:8080/board/view/${itemId}`)
+            const { data } = await axios.get(`http://192.168.35.130:8080/board/view/${itemId}`)
 
-            console.log(data)
-            setMemo(data)
+
+            if (data) {
+                setMemo(data)
+                console.log(memo)
+            }
         }
 
         fetchMemo();
@@ -22,27 +28,33 @@ const DetailViewScreen = ({ route }) => {
 
     const deleteMemo = async () => {
 
-        const { status } = await axios.delete(`http://10.40.1.202:8080/board/delete/${itemId}`)
+        const { status } = await axios.get(`http://192.168.35.130:8080/board/delete/${itemId}`)
+        console.log(status)
+
+        navigation.navigate('Home')
+
     }
 
     return (
-        <View>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <View style={{ flexDirection: 'row', width: '100%', padding: 10 }} >
+                    {/* <TouchableOpacity style={styles.deleteButton}>
+                        <Text style={{ fontSize: 25,  fontWeight: 'bold'}}>📝</Text>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end'}} onPress={deleteMemo}>
+                        <View style={{ marginRight: 10, width: 120, borderRadius: 30, backgroundColor: "#f7df4c", paddingHorizontal: 10, paddingVertical: 10 }}>
+                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>삭제 하기 🗑</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
             <View style={styles.detailMemoContainer}>
                 <View style={styles.titleContainer}>
-                    <View >
-                        <Text>Title</Text>
-                    </View>
-                    <View>
-                        <Text>{memo.title}</Text>
-                    </View>
+                    <Text style={styles.title}>{memo.title} </Text>
                 </View>
                 <View style={styles.contentContainer}>
-                    <View>
-                        <Text>Content</Text>
-                    </View>
-                    <View>
-                        <Text>{memo.content}</Text>
-                    </View>
+                    <Text style={styles.content}>{memo.content}</Text>
                 </View>
             </View>
         </View>
@@ -50,15 +62,66 @@ const DetailViewScreen = ({ route }) => {
 }
 
 const styles = StyleSheet.create({
-    detailMemoContainer: {
-
+    container: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: '100%',
+        backgroundColor: '#fff'
     },
-    titleContainer: {
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'right',
+        marginTop: 20,
+    },
+    detailMemoContainer: {
+        marginTop: 10,
+        backgroundColor: '#ebece9',
+        width: '90%',
+        height: '80%',
+        borderRadius: 20,
+        padding: 10,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 10,
+    },
 
+
+    titleContainer: {
+        height: 75,
+        lineHeight: 80,
+        padding: 10,
+        borderBottomColor: '#000',
+        backgroundColor: '#fff',
+        borderRadius: 20,
+    },
+
+    title: {
+        lineHeight: 60,
+        fontSize: 24,
+        textAlign: 'center'
     },
 
     contentContainer: {
+        backgroundColor: "#fff",
+        marginTop: 10,
+        borderRadius: 20,
+        height: '80%',
+        padding: 10,
+    },
 
+    content: {
+        fontSize: 18,
+    },
+    deleteButton: {
+        paddingRight: 10,
+        borderRadius: 30,
+        position: 'absolute',
+        bottom: 100,
+        zIndex: 9,
     }
 })
 

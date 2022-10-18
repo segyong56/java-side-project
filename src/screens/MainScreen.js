@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {ScrollView, View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,22 +12,29 @@ const MainScreen = ({ navigation }) => {
 
 
         const fetchMemos = async () => {
-            const { data } = await axios.get("http://10.40.1.202:8080/board/list")
+            const { data } = await axios.get("http://192.168.35.130:8080/board/list")
             console.log(data)
             setMemos(data);
         }
         fetchMemos();
+        return () => setMemos([]);
     }, [memos])
 
     return (
         <ScrollView>
-            <Text>My Memory App</Text>
-            <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('CreateMemo')} />
+            <View style={{ flex: 1, padding: 60, flexDirection: 'colums', textAlign: 'center'}}>
+                <Text style={{ fontSize: 40, textAlign: 'center' }}>All notes</Text>
+                <Text style={{ textAlign: 'center', paddingTop: 5}}>{memos.length} notes</Text>
+            </View>
+            <View>
+                
+            </View>
+            <Button style={styles.createButton} title="+" onPress={() => navigation.navigate('CreateMemo')} />
             <View
                 style={styles.memoItemContainer}
             >
                 <View style={styles.memoItemIcon}></View>
-                {memos.map(item => {
+                {memos && memos.map(item => {
                     return (
                         <TouchableOpacity
                             style={styles.memoItem}
@@ -35,7 +42,10 @@ const MainScreen = ({ navigation }) => {
                             onPress={() => navigation.navigate('Detail', { itemId: item.id })}
                         >
                             <View>
-                                <Text style={styles.memoTitle}>📝 {item.title}</Text>
+                                <Text style={{ paddingRight: 10, textAlign: 'right'}}>📝</Text>
+                            </View>
+                            <View>
+                                <Text style={styles.memoTitle}> {item.title}</Text>
                             </View>
 
                             <View>
@@ -60,29 +70,30 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center'
+        
     },
 
     memoItemIcon: {
 
-    },  
+    },
 
     memoItem: {
         width: '45%',
-        height:  150,
+        height: 200,
         paddingTop: 10,
         paddingBottom: 10,
         borderColor: '#ededed',
-        backgroundColor: '#ededed',
+        backgroundColor: '#fff',
         margin: 5,
-        borderRadius: 10,
+        borderRadius: 15,
     },
 
     memoTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        paddingTop: 30,
+        paddingTop: 5,
         textAlign: 'left',
-        paddingLeft: 10,
+        textAlign: 'center'
     },
 
     memoContent: {
@@ -92,8 +103,8 @@ const styles = StyleSheet.create({
 
     createButton: {
         position: 'absolute',
-        flexDirection:'row',
-        justifyContent: 'center', 
+        flexDirection: 'row',
+        justifyContent: 'center',
         bottom: 10,
         width: 70,
         height: 70,
