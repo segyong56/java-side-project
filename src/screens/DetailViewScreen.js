@@ -22,31 +22,36 @@ const DetailViewScreen = ({ route, navigation }) => {
                 console.log(memo)
             }
         }
-
         fetchMemo();
+
     }, [])
 
     const deleteMemo = async () => {
 
         const { status } = await axios.get(`http://192.168.35.130:8080/board/delete/${itemId}`)
         console.log(status)
-
-        navigation.navigate('Home')
+        navigation.navigate('Home', { success: true })
 
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <View style={{ flexDirection: 'row', width: '100%', padding: 10 }} >
-                    {/* <TouchableOpacity style={styles.deleteButton}>
-                        <Text style={{ fontSize: 25,  fontWeight: 'bold'}}>📝</Text>
-                    </TouchableOpacity> */}
-                    <TouchableOpacity style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end'}} onPress={deleteMemo}>
-                        <View style={{ marginRight: 10, width: 120, borderRadius: 30, backgroundColor: "#f7df4c", paddingHorizontal: 10, paddingVertical: 10 }}>
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>삭제 하기 🗑</Text>
-                        </View>
-                    </TouchableOpacity>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: '100%', padding: 10 }} >
+                    <View>
+                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-end'}} onPress={() => navigation.navigate("ModifyMemo", { itemId: itemId})}>
+                            <View style={{ marginRight: 10, width: 120, borderRadius: 30, backgroundColor: "#f7df4c", paddingHorizontal: 10, paddingVertical: 10 }}>
+                                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>수정하기 📝</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'flex-end' }} onPress={deleteMemo}>
+                            <View style={{ marginRight: 10, width: 120, borderRadius: 30, backgroundColor: "#f7df4c", paddingHorizontal: 10, paddingVertical: 10 }}>
+                                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>삭제하기 🗑</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
             <View style={styles.detailMemoContainer}>

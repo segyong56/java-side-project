@@ -25,7 +25,8 @@ const CreateMemoScreen = ({ navigation }) => {
             content: content
         }
         const { status } = await axios.post("http://192.168.35.130:8080/board/writedo", memoData);
-        navigation.navigate('Home')
+        
+        navigation.navigate('Home', { success: true })
     }
     return (
         <View style={{ height: '100%', padding: 10, backgroundColor: '#fff' }}>

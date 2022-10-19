@@ -1,33 +1,38 @@
 import React, { useState, useEffect } from 'react'
 import { ScrollView, View, Text, TextInput, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useIsFocused } from '@react-navigation/native';
+
 
 const MainScreen = ({ navigation }) => {
 
+
+
     const [memos, setMemos] = useState([]);
 
+    const isFocused = useIsFocused();
+    const fetchMemos = async () => {
+        const { data } = await axios.get("http://192.168.35.130:8080/board/list")
+        console.log(data)
+        setMemos(data);
+    }
+    
     useEffect(() => {
-
-
-        const fetchMemos = async () => {
-            const { data } = await axios.get("http://192.168.35.130:8080/board/list")
-            console.log(data)
-            setMemos(data);
-        }
+ 
         fetchMemos();
-        return () => setMemos([]);
-    }, [memos])
+       
+    }, [isFocused])
+
+
 
     return (
         <ScrollView>
-            <View style={{ flex: 1, padding: 60, flexDirection: 'colums', textAlign: 'center'}}>
+            <View style={{ flex: 1, padding: 60, flexDirection: 'colums', textAlign: 'center' }}>
                 <Text style={{ fontSize: 40, textAlign: 'center' }}>All notes</Text>
-                <Text style={{ textAlign: 'center', paddingTop: 5}}>{memos.length} notes</Text>
+                <Text style={{ textAlign: 'center', paddingTop: 5 }}>{memos.length} notes</Text>
             </View>
             <View>
-                
+
             </View>
             <Button style={styles.createButton} title="+" onPress={() => navigation.navigate('CreateMemo')} />
             <View
@@ -42,7 +47,7 @@ const MainScreen = ({ navigation }) => {
                             onPress={() => navigation.navigate('Detail', { itemId: item.id })}
                         >
                             <View>
-                                <Text style={{ paddingRight: 10, textAlign: 'right'}}>📝</Text>
+                                <Text style={{ paddingRight: 10, textAlign: 'right' }}>📝</Text>
                             </View>
                             <View>
                                 <Text style={styles.memoTitle}> {item.title}</Text>
@@ -70,7 +75,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center'
-        
+
     },
 
     memoItemIcon: {
@@ -109,7 +114,9 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         borderRadius: 50,
-        backgroundColor: '#BCCEF8'
+        backgroundColor: '#BCCEF8',
+        
     }
+    
 })
 export default MainScreen
